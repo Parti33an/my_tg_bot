@@ -282,6 +282,7 @@ def add_photo(message):
             bot.reply_to(message, e)
         
 if __name__ == '__main__':
+    # create dBase
     #try:
     create_database()
     bot.polling()
