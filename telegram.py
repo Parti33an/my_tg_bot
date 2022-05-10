@@ -1,3 +1,7 @@
+# Ванюков Е.Е. 05_2022
+# my tg: @Evan_N
+# tg-bot: @Evan_location_bot
+
 from pathlib import Path
 import sqlite3
 from bot_token import token

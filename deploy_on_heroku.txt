@@ -1,0 +1,16 @@
+В видео не объяснялось как развернуть бота на Heroku. Напишу, как сделал это я, мб кто-нибудь сэкономит время.
+
+Бот запускался через polling.
+
+...
+bot = telebot.TeleBot(TOKEN)
+...
+if __name__ == '__main__':
+  bot.polling()
+
+В проект был добавлен Procfile c текстом:
+worker: python bot.py
+
+Развертывание через hertoku-cli - в консоли:
+push heroku master # апдейт файлов
+heroku ps:scale worker=1 # запуск worker-а, запускал только в первый раз
