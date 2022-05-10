@@ -240,29 +240,29 @@ def add_location(message):
         bot.send_message(message.chat.id, text="Отправьте фото нового места следующим сообщением или /skip:")
     elif (get_state(message) == START):
         bot.send_message(message.chat.id, text="Сохраненные места в пределах 500 м от указанного:")
-        
-    with DataConn(DB_NAME) as conn:
-        cur = conn.cursor()
-        cur.execute(f"SELECT title, location, filename FROM places WHERE chatid={message.chat.id};")
-        entries = cur.fetchall()
-        if (entries):
-            count = 0
-            for data in reversed(entries):
-                distance = geodesic(get_location(data[1]), (message.location.latitude, message.location.longitude)).m
-                if distance < 500:
-                    bot.send_message(message.chat.id, text=f"# {count+1}:")
-                    bot.send_message(message.chat.id, text = data[0])
-                    bot.send_location(message.chat.id, *get_location(data[1]))
-                    if (data[2]):
-                        try:
-                            bot.send_photo(message.chat.id, photo=open(Path(data[2]), 'rb'))
-                        except:
-                            pass
-                    count +=1
-                else:
-                    bot.send_message(message.chat.id, text="Поблизости нет любимых мест!")
-        else:
-            bot.send_message(message.chat.id, text="Ваш список пуст!")
+        # выводим из базы сохраенные места
+        with DataConn(DB_NAME) as conn:
+            cur = conn.cursor()
+            cur.execute(f"SELECT title, location, filename FROM places WHERE chatid={message.chat.id};")
+            entries = cur.fetchall()
+            if (entries):
+                count = 0
+                for data in reversed(entries):
+                    distance = geodesic(get_location(data[1]), (message.location.latitude, message.location.longitude)).m
+                    if distance < 500:
+                        bot.send_message(message.chat.id, text=f"# {count+1}:")
+                        bot.send_message(message.chat.id, text = data[0])
+                        bot.send_location(message.chat.id, *get_location(data[1]))
+                        if (data[2]):
+                            try:
+                                bot.send_photo(message.chat.id, photo=open(Path(data[2]), 'rb'))
+                            except:
+                                pass
+                        count +=1
+                    else:
+                        bot.send_message(message.chat.id, text="Поблизости нет любимых мест!")
+            else:
+                bot.send_message(message.chat.id, text="Ваш список пуст!")
 
 @bot.message_handler(content_types=['photo'])
 def add_photo(message):
